@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Enxergando de Outras Formas — Física e Tecnologia a Serviço da Acessibilidade Visual</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=Archivo+Expanded:wght@700;800;900&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* =========================================================
+     DIREÇÃO: revista científica / grid suíço.
+     Fundo branco, tinta quase-preta, hairlines, muito ar.
+     Um único acento — âmbar de luz — usado só em dados e detalhes.
+     Título grotesk gigante É o hero. Zero card, zero radius, zero gradiente.
+     ========================================================= */
+  :root{
+    --paper:#ffffff;
+    --ink:#111110;
+    --grey:#8a8a86;      /* texto secundário / dados */
+    --faint:#c9c9c4;
+    --line:#e4e4df;      /* hairline */
+    --amber:#e8a03d;     /* luz — acento pontual */
+    --fs:17px;
+    --disp:"Archivo Expanded","Archivo",system-ui,sans-serif;
+    --sans:"Archivo",system-ui,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,monospace;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:var(--sans); font-size:var(--fs); line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* simulação aplicada à própria página */
+  body.sim-miopia .canvas{filter:blur(4px)}
+  body.sim-catarata .canvas{filter:blur(1.6px) sepia(.5) brightness(1.12) contrast(.78)}
+  body.sim-glaucoma .vig{opacity:1}
+  body.contraste{--paper:#000;--ink:#fff;--grey:#fff;--faint:#fff;--line:#fff;--amber:#ffd000}
+  body.grande{--fs:20px}
+
+  a{color:inherit}
+  :focus-visible{outline:2px solid var(--amber); outline-offset:3px}
+
+  .skip{position:absolute;left:-999px;top:0;background:var(--ink);color:var(--paper);padding:.6rem 1rem;z-index:99;font-family:var(--mono);font-size:.8rem}
+  .skip:focus{left:8px;top:8px}
+
+  .wrap{max-width:1200px; margin:0 auto; padding:0 clamp(1rem,4vw,3rem)}
+
+  /* ---------- HERO: título gigante é a tese ---------- */
+  header{padding:clamp(2rem,6vh,5rem) 0 0; border-bottom:1px solid var(--line)}
+  .masthead{display:flex; justify-content:space-between; align-items:baseline;
+    font-family:var(--mono); font-size:.72rem; letter-spacing:.04em; color:var(--grey);
+    text-transform:uppercase; padding-bottom:2.5rem}
+  .masthead .badge{border:1px solid var(--line); padding:.25rem .6rem; color:var(--ink)}
+  h1{font-family:var(--disp); font-weight:900; text-transform:uppercase;
+     font-size:clamp(2.6rem,10.5vw,9rem); line-height:.86; letter-spacing:-.02em;
+     margin:0; color:var(--ink)}
+  h1 .light{color:var(--faint)}
+  .hero-figure{display:flex; flex-direction:column; align-items:center; margin:2.5rem 0 0}
+  .hero-figure img{width:min(340px,60vw); height:auto; display:block}
+  .img-fallback{font-family:var(--mono); font-size:.75rem; color:var(--grey); border:1px dashed var(--line);
+    padding:1.5rem 2rem; border-radius:8px; text-align:center; max-width:340px}
+  .hero-meta{display:grid; gap:2rem; grid-template-columns:1fr; padding:2.5rem 0;
+    border-top:1px solid var(--line)}
+  @media(min-width:760px){.hero-meta{grid-template-columns:1fr 1fr 1fr}}
+  .hero-meta .col h2{font-family:var(--mono); font-size:.72rem; text-transform:uppercase;
+    letter-spacing:.08em; color:var(--grey); margin:0 0 .8rem; font-weight:500}
+  .hero-meta .col p{margin:0; font-size:.95rem; max-width:36ch}
+  .lede{font-family:var(--disp); font-weight:700; font-size:clamp(1.1rem,2vw,1.5rem);
+    line-height:1.25; letter-spacing:-.01em}
+
+  /* ---------- barra de simulação (signature) ---------- */
+  .simbar{border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+    display:flex; flex-wrap:wrap; align-items:center; gap:.2rem;
+    font-family:var(--mono); font-size:.75rem}
+  .simbar .lab{padding:.9rem 1rem .9rem 0; color:var(--grey); text-transform:uppercase; letter-spacing:.06em}
+  .simbar button{font-family:var(--mono); font-size:.75rem; background:transparent; border:0;
+    border-left:1px solid var(--line); padding:.9rem 1.1rem; cursor:pointer; color:var(--ink);
+    text-transform:uppercase; letter-spacing:.04em}
+  .simbar button:hover{background:var(--ink); color:var(--paper)}
+  .simbar button[aria-pressed="true"]{background:var(--amber); color:var(--ink)}
+
+  /* ---------- SEÇÕES: capítulo de revista ---------- */
+  section{padding:clamp(3rem,7vh,6rem) 0; border-bottom:1px solid var(--line)}
+  .sec-head{display:grid; gap:1.2rem; grid-template-columns:1fr; align-items:start; margin-bottom:2.5rem}
+  @media(min-width:760px){.sec-head{grid-template-columns:auto 1fr auto; gap:2rem}}
+  .sec-num{font-family:var(--disp); font-weight:900; font-size:clamp(2rem,5vw,3.4rem);
+    line-height:.8; color:var(--ink)}
+  .sec-title{font-family:var(--disp); font-weight:800; text-transform:uppercase;
+    font-size:clamp(1.5rem,4vw,2.6rem); line-height:.95; letter-spacing:-.01em; margin:0}
+  .sec-kicker{font-family:var(--mono); font-size:.72rem; text-transform:uppercase;
+    letter-spacing:.08em; color:var(--grey); text-align:left}
+  @media(min-width:760px){.sec-kicker{text-align:right; max-width:18ch}}
+
+  .cols{display:grid; gap:2rem; grid-template-columns:1fr}
+  @media(min-width:760px){.cols.c2{grid-template-columns:1fr 1fr} .cols.c3{grid-template-columns:1fr 1fr 1fr}}
+  .cols p{margin:0 0 1rem}
+  .body-lead{font-size:1.15rem; line-height:1.45; max-width:60ch}
+
+  h3{font-family:var(--mono); font-size:.75rem; font-weight:500; text-transform:uppercase;
+    letter-spacing:.06em; color:var(--amber); margin:0 0 .5rem; padding-top:1rem; border-top:1px solid var(--line)}
+  p{color:var(--ink)}
+  .muted{color:var(--grey)}
+
+  figure{margin:2.5rem 0 0}
+  figure img{width:100%; height:auto; display:block; mix-blend-mode:multiply}
+  body.contraste figure img{mix-blend-mode:normal}
+  figcaption{font-family:var(--mono); font-size:.72rem; color:var(--grey); margin-top:.7rem;
+    padding-top:.7rem; border-top:1px solid var(--line); max-width:60ch}
+  figcaption b{color:var(--ink); font-weight:500}
+
+  /* dados crus como design — fileira de "patentes" vira glossário óptico */
+  .datastrip{display:flex; flex-wrap:wrap; gap:0; border-top:1px solid var(--line);
+    margin-top:2.5rem; font-family:var(--mono); font-size:.72rem}
+  .datastrip span{padding:.7rem 1rem .7rem 0; color:var(--grey)}
+  .datastrip span b{color:var(--ink); font-weight:500}
+
+  /* braille interativo — estética mono */
+  .braille-tool{border-top:1px solid var(--line); padding-top:2rem; margin-top:2.5rem}
+  .braille-tool label{font-family:var(--mono); font-size:.72rem; text-transform:uppercase;
+    letter-spacing:.06em; color:var(--grey); display:block; margin-bottom:.8rem}
+  .braille-in{font-family:var(--mono); width:100%; max-width:420px; padding:.7rem .9rem;
+    border:1px solid var(--line); background:var(--paper); color:var(--ink); font-size:1rem}
+  .braille-in:focus{outline:2px solid var(--amber); outline-offset:0}
+  .braille{display:flex; gap:.5rem; flex-wrap:wrap; margin-top:1.4rem}
+  .cell{display:grid; grid-template-columns:1fr 1fr; grid-template-rows:repeat(3,1fr);
+    gap:6px; width:44px; height:64px}
+  .dot{border-radius:50%; border:1px solid var(--faint)}
+  .dot.on{background:var(--ink); border-color:var(--ink)}
+  body.contraste .dot.on{background:var(--amber); border-color:var(--amber)}
+
+  pre{overflow-x:auto; border:1px solid var(--line); padding:1.1rem; margin-top:1.4rem; background:var(--paper)}
+  code{font-family:var(--mono); font-size:.82rem; color:var(--ink); line-height:1.7}
+  code .cm{color:var(--grey)}
+
+  .placeholder{border:1px solid var(--line); padding:2.5rem 1.5rem; text-align:center; margin-top:2.5rem}
+  .placeholder .m{font-family:var(--mono); font-size:.72rem; text-transform:uppercase;
+    letter-spacing:.06em; color:var(--grey)}
+  .placeholder .l{font-family:var(--disp); font-weight:700; margin:.6rem 0; font-size:1.05rem}
+  .placeholder code{font-size:.72rem; color:var(--amber)}
+
+  .vig{position:fixed; inset:0; pointer-events:none; z-index:5; opacity:0; transition:opacity .3s;
+    background:radial-gradient(circle at 50% 45%, transparent 15%, rgba(0,0,0,.97) 56%)}
+
+  footer{padding:clamp(3rem,7vh,6rem) 0}
+  footer .colophon{display:grid; gap:2rem; grid-template-columns:1fr}
+  @media(min-width:760px){footer .colophon{grid-template-columns:2fr 1fr}}
+  footer h2{font-family:var(--disp); font-weight:900; text-transform:uppercase;
+    font-size:clamp(1.4rem,4vw,2.4rem); margin:0 0 1rem; line-height:.95}
+  footer .note{font-family:var(--mono); font-size:.75rem; color:var(--grey); line-height:1.9}
+  footer code{font-family:var(--mono); color:var(--ink); font-size:.72rem}
+
+  /* utilidades a11y flutuantes — discretas, mono */
+  .util{position:fixed; right:0; bottom:0; z-index:40; display:flex; font-family:var(--mono); font-size:.7rem}
+  .util button{font-family:var(--mono); font-size:.7rem; background:var(--paper); color:var(--ink);
+    border:1px solid var(--line); border-right:0; padding:.7rem .8rem; cursor:pointer;
+    text-transform:uppercase; letter-spacing:.04em}
+  .util button:last-child{border-right:1px solid var(--line)}
+  .util button[aria-pressed="true"]{background:var(--amber)}
+
+  @media (prefers-reduced-motion: reduce){*{scroll-behavior:auto!important; transition:none!important}}
+</style>
+</head>
+<body>
+<a class="skip" href="#c1">Pular para o conteúdo</a>
+<div class="vig" aria-hidden="true"></div>
+
+<div class="canvas">
+<header>
+  <div class="wrap">
+    <div class="masthead">
+      <span class="badge">Feira de Ciências 2026</span>
+      <span>Física · Biologia · Tecnologia</span>
+      <span>Ed. 01</span>
+    </div>
+    <h1>Enxergando<br><span class="light">de outras</span> formas</h1>
+    <figure class="hero-figure">
+      <img src="img/olho-simples.jpg" alt="Corte anatômico do olho humano." onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+      <span class="img-fallback" style="display:none">[ imagem: img/olho-simples.jpg — abra o site pela pasta descompactada para vê-la ]</span>
+    </figure>
+    <div class="hero-meta">
+      <div class="col">
+        <p class="lede">A física e a tecnologia a serviço da acessibilidade visual.</p>
+      </div>
+      <div class="col">
+        <h2>Sobre este projeto</h2>
+        <p class="muted">Um estudo sobre como a luz vira imagem no olho humano, o que acontece quando esse processo falha, e como física e engenharia devolvem autonomia a quem enxerga de outras formas.</p>
+      </div>
+      <div class="col">
+        <h2>Nesta edição</h2>
+        <p class="muted">Óptica da visão · o olho humano · óculos de simulação · o sistema Braille · bengala eletrônica com Arduino.</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- SIGNATURE: barra de simulação -->
+<div class="wrap">
+  <div class="simbar" role="group" aria-label="Simulador de visão — aplica o efeito na página inteira">
+    <span class="lab">Ver a página como →</span>
+    <button data-sim="none" aria-pressed="true">Visão nítida</button>
+    <button data-sim="miopia" aria-pressed="false">Miopia</button>
+    <button data-sim="catarata" aria-pressed="false">Catarata</button>
+    <button data-sim="glaucoma" aria-pressed="false">Glaucoma</button>
+  </div>
+</div>
+
+<main>
+
+  <!-- 01 ÓPTICA -->
+  <section id="c1">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="sec-num">01</span>
+        <h2 class="sec-title">Óptica da visão e deficiências visuais</h2>
+        <span class="sec-kicker">Física da luz / refração</span>
+      </div>
+      <div class="cols c2">
+        <div>
+          <p class="body-lead">Enxergar é um fenômeno físico. A luz se refrata ao atravessar o olho e precisa focar num ponto exato — a retina. Quando o foco cai fora dela, surge uma deficiência visual.</p>
+        </div>
+        <div>
+          <h3>Miopia</h3>
+          <p class="muted">A imagem foca antes da retina — o olho é longo demais ou a córnea curva demais. O que está longe fica embaçado. Correção: lente divergente (negativa).</p>
+          <h3>Hipermetropia</h3>
+          <p class="muted">A imagem foca depois da retina. O que está perto fica embaçado. Correção: lente convergente (positiva).</p>
+          <h3>Astigmatismo</h3>
+          <p class="muted">A córnea não é esférica; um eixo foca antes do outro. Correção: lente cilíndrica.</p>
+        </div>
+      </div>
+      <figure>
+        <img src="img/refracao.jpg" alt="Diagramas de visão normal, hipermetropia e miopia mostrando onde a luz foca em relação à retina, com correção por lente convexa e côncava.">
+        <figcaption><b>Fig. 1</b> — Onde a luz foca em cada caso e a lente que corrige. Fonte: substituir pela origem da imagem.</figcaption>
+      </figure>
+      <div class="datastrip" aria-hidden="true">
+        <span><b>D = 1/f</b>&nbsp; dioptria</span>
+        <span><b>−</b>&nbsp; lente divergente</span>
+        <span><b>+</b>&nbsp; lente convergente</span>
+        <span><b>n</b>&nbsp; índice de refração</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 OLHO -->
+  <section id="c2">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="sec-num">02</span>
+        <h2 class="sec-title">Como funciona o olho humano</h2>
+        <span class="sec-kicker">Biologia + física</span>
+      </div>
+      <div class="cols c2">
+        <div>
+          <p class="body-lead">O olho é uma câmera biológica. A luz entra pela córnea, é dosada pela pupila, focada pelo cristalino e projetada de cabeça para baixo na retina.</p>
+        </div>
+        <div>
+          <h3>Córnea &amp; cristalino</h3>
+          <p class="muted">Concentram a luz. O cristalino muda de forma para focar perto ou longe — a acomodação.</p>
+          <h3>Retina</h3>
+          <p class="muted">Cones para cor e detalhe, bastonetes para luz fraca e movimento. Aqui a imagem física vira sinal nervoso, que segue pelo nervo óptico até o cérebro.</p>
+        </div>
+      </div>
+      <figure>
+        <img src="img/olho-anatomia.jpg" alt="Diagrama em corte do olho humano com córnea, íris, pupila, cristalino, corpo ciliar, retina, coroide, esclera, fóvea e nervo óptico identificados.">
+        <figcaption><b>Fig. 2</b> — Anatomia do olho em corte, da córnea ao nervo óptico. Fonte: substituir pela origem da imagem.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- 03 SIMULAÇÃO -->
+  <section id="c3">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="sec-num">03</span>
+        <h2 class="sec-title">Óculos de simulação</h2>
+        <span class="sec-kicker">Experimento</span>
+      </div>
+      <div class="cols c2">
+        <div>
+          <p class="body-lead">Óculos de simulação fazem quem enxerga bem sentir como é ter uma deficiência visual — uma ferramenta de empatia e de ensino.</p>
+        </div>
+        <div>
+          <p class="muted">Neste site, a simulação é digital: a barra <b>"Ver a página como →"</b>, no topo, aplica miopia, catarata ou glaucoma sobre tudo o que você está lendo agora. Compare com o par físico que construímos.</p>
+        </div>
+      </div>
+      <div class="placeholder">
+        <span class="m">Espaço reservado</span>
+        <div class="l">Foto dos óculos de simulação de vocês</div>
+        <span class="m">Substitua por &nbsp;<code>&lt;img src="img/oculos.jpg" alt="..."&gt;</code></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 BRAILLE -->
+  <section id="c4">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="sec-num">04</span>
+        <h2 class="sec-title">O sistema Braille</h2>
+        <span class="sec-kicker">Acessibilidade tátil</span>
+      </div>
+      <div class="cols c2">
+        <div>
+          <p class="body-lead">Criado por Louis Braille em 1824, o sistema usa uma célula de 6 pontos (2 × 3) em relevo. Cada combinação é uma letra, número ou símbolo, lida com a ponta dos dedos.</p>
+        </div>
+        <div>
+          <div class="braille-tool">
+            <label for="brailleInput">Digite e leia em Braille</label>
+            <input id="brailleInput" class="braille-in" type="text" value="acessivel" maxlength="24" aria-describedby="bh">
+            <div id="brailleOut" class="braille" aria-live="polite"></div>
+            <p id="bh" class="muted" style="margin-top:1rem;font-size:.85rem">Pontos cheios = relevo sentido pelo dedo. Letras a–z e espaço.</p>
+          </div>
+        </div>
+      </div>
+      <figure>
+        <img src="img/braille-alfabeto.jpg" alt="Tabela do alfabeto Braille de A a Z com padrões de pontos, mais maiúscula, número e pontuação.">
+        <figcaption><b>Fig. 3</b> — Alfabeto Braille completo. Fonte: substituir pela origem da imagem.</figcaption>
+      </figure>
+      <figure>
+        <img src="img/braille-tabela.jpg" alt="Cartão de metal com o alfabeto Braille, números e pontuação em relevo, para leitura tátil.">
+        <figcaption><b>Fig. 3b</b> — Cartão tátil em relevo: letras, números e pontuação lidos com a ponta dos dedos. Fonte: substituir pela origem da imagem.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- 05 BENGALA -->
+  <section id="c5">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="sec-num">05</span>
+        <h2 class="sec-title">Bengala eletrônica com Arduino</h2>
+        <span class="sec-kicker">Tecnologia assistiva</span>
+      </div>
+      <div class="cols c2">
+        <div>
+          <p class="body-lead">A bengala comum detecta obstáculos no chão pelo toque. A eletrônica soma um sensor ultrassônico que "enxerga" à frente e na altura do corpo, avisando por vibração antes do contato.</p>
+        </div>
+        <div>
+          <h3>O princípio físico</h3>
+          <p class="muted">O HC-SR04 emite ultrassom e mede o tempo do eco. A distância é <b>d = (v · t) / 2</b>, com v ≈ 343 m/s no ar. Divide-se por 2 porque o som vai e volta.</p>
+          <h3>Componentes</h3>
+          <p class="muted">Arduino Nano · sensor HC-SR04 · motor vibratório ou buzzer · bateria · a bengala como estrutura.</p>
+        </div>
+      </div>
+      <figure>
+        <img src="img/bengala.jpg" alt="Pessoa com deficiência visual atravessando na faixa de pedestres com uma bengala branca tradicional.">
+        <figcaption><b>Fig. 4</b> — A bengala branca tradicional detecta pelo toque; a versão eletrônica amplia o alcance. Fonte: substituir pela origem da imagem.</figcaption>
+      </figure>
+      <pre><code><span class="cm">// lógica principal</span>
+long distancia = medirDistancia();   <span class="cm">// cm</span>
+if (distancia &lt; 50) {                <span class="cm">// obstáculo próximo</span>
+  digitalWrite(vibraPin, HIGH);       <span class="cm">// vibra</span>
+} else {
+  digitalWrite(vibraPin, LOW);
+}</code></pre>
+      <div class="placeholder">
+        <span class="m">Espaço reservado</span>
+        <div class="l">Foto do protótipo de vocês: bengala + Arduino + sensor</div>
+        <span class="m">Substitua por &nbsp;<code>&lt;img src="img/prototipo.jpg" alt="..."&gt;</code></span>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="colophon">
+      <div>
+        <h2>Enxergando de outras formas</h2>
+        <p class="muted" style="max-width:50ch">Projeto de feira de ciências. A física que explica a visão é a mesma que a corrige — e a tecnologia estende esse alcance a quem enxerga de outras formas.</p>
+      </div>
+      <div class="note">
+        <b style="color:var(--ink)">Trocar imagens:</b><br>
+        Ponha o arquivo em <code>/img</code> e ajuste o <code>src</code>.<br><br>
+        <b style="color:var(--ink)">Créditos:</b><br>
+        Liste aqui a fonte de cada figura.
+      </div>
+    </div>
+  </div>
+</footer>
+</div><!-- /canvas -->
+
+<div class="util" role="group" aria-label="Acessibilidade">
+  <button data-toggle="grande" aria-pressed="false">A+ Fonte</button>
+  <button data-toggle="contraste" aria-pressed="false">Contraste</button>
+</div>
+
+<script>
+  const body=document.body;
+  const sims=['sim-miopia','sim-catarata','sim-glaucoma'];
+  const sb=document.querySelectorAll('.simbar button');
+  sb.forEach(b=>b.addEventListener('click',()=>{
+    sims.forEach(c=>body.classList.remove(c));
+    sb.forEach(x=>x.setAttribute('aria-pressed','false'));
+    b.setAttribute('aria-pressed','true');
+    if(b.dataset.sim!=='none') body.classList.add('sim-'+b.dataset.sim);
+  }));
+  document.querySelectorAll('.util button').forEach(b=>b.addEventListener('click',()=>{
+    const on=body.classList.toggle(b.dataset.toggle);
+    b.setAttribute('aria-pressed',on);
+  }));
+
+  const map={a:[1],b:[1,2],c:[1,4],d:[1,4,5],e:[1,5],f:[1,2,4],g:[1,2,4,5],h:[1,2,5],
+    i:[2,4],j:[2,4,5],k:[1,3],l:[1,2,3],m:[1,3,4],n:[1,3,4,5],o:[1,3,5],p:[1,2,3,4],
+    q:[1,2,3,4,5],r:[1,2,3,5],s:[2,3,4],t:[2,3,4,5],u:[1,3,6],v:[1,2,3,6],w:[2,4,5,6],
+    x:[1,3,4,6],y:[1,3,4,5,6],z:[1,3,5,6],' ':[]};
+  const order=[1,4,2,5,3,6];
+  const out=document.getElementById('brailleOut');
+  function render(t){out.innerHTML='';[...t.toLowerCase()].forEach(ch=>{
+    if(!(ch in map))return;const cell=document.createElement('div');cell.className='cell';
+    cell.setAttribute('aria-label',ch===' '?'espaço':'letra '+ch);
+    order.forEach(p=>{const d=document.createElement('span');
+      d.className='dot'+(map[ch].includes(p)?' on':'');cell.appendChild(d);});
+    out.appendChild(cell);});}
+  const inp=document.getElementById('brailleInput');
+  inp.addEventListener('input',e=>render(e.target.value));render(inp.value);
+</script>
+</body>
+</html>
