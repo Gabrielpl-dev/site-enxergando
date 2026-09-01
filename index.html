@@ -17,10 +17,11 @@
   :root{
     --paper:#ffffff;
     --ink:#111110;
-    --grey:#8a8a86;      /* texto secundário / dados */
+    --grey:#6b6b65;      /* texto secundário / dados — 5.1:1 no branco (AA) */
     --faint:#c9c9c4;
     --line:#e4e4df;      /* hairline */
-    --amber:#e8a03d;     /* luz — acento pontual */
+    --amber:#e8a03d;     /* luz — acento pontual, só em fundo/detalhe, nunca em texto */
+    --amber-ink:#92400e; /* mesmo acento, escurecido p/ uso como cor de texto — 7:1 no branco */
     --fs:17px;
     --disp:"Archivo Expanded","Archivo",system-ui,sans-serif;
     --sans:"Archivo",system-ui,sans-serif;
@@ -38,7 +39,7 @@
   body.sim-miopia .canvas{filter:blur(4px)}
   body.sim-catarata .canvas{filter:blur(1.6px) sepia(.5) brightness(1.12) contrast(.78)}
   body.sim-glaucoma .vig{opacity:1}
-  body.contraste{--paper:#000;--ink:#fff;--grey:#fff;--faint:#fff;--line:#fff;--amber:#ffd000}
+  body.contraste{--paper:#000;--ink:#fff;--grey:#fff;--faint:#fff;--line:#fff;--amber:#ffd000;--amber-ink:#ffd000}
   body.grande{--fs:20px}
 
   a{color:inherit}
@@ -101,12 +102,12 @@
   .body-lead{font-size:1.15rem; line-height:1.45; max-width:60ch}
 
   h3{font-family:var(--mono); font-size:.75rem; font-weight:500; text-transform:uppercase;
-    letter-spacing:.06em; color:var(--amber); margin:0 0 .5rem; padding-top:1rem; border-top:1px solid var(--line)}
+    letter-spacing:.06em; color:var(--amber-ink); margin:0 0 .5rem; padding-top:1rem; border-top:1px solid var(--line)}
   p{color:var(--ink)}
   .muted{color:var(--grey)}
 
   figure{margin:2.5rem 0 0}
-  figure img{width:100%; height:auto; display:block; mix-blend-mode:multiply}
+  figure img{width:100%; height:auto; max-height:70vh; object-fit:cover; display:block; mix-blend-mode:multiply}
   body.contraste figure img{mix-blend-mode:normal}
   figcaption{font-family:var(--mono); font-size:.72rem; color:var(--grey); margin-top:.7rem;
     padding-top:.7rem; border-top:1px solid var(--line); max-width:60ch}
@@ -140,7 +141,7 @@
   .placeholder .m{font-family:var(--mono); font-size:.72rem; text-transform:uppercase;
     letter-spacing:.06em; color:var(--grey)}
   .placeholder .l{font-family:var(--disp); font-weight:700; margin:.6rem 0; font-size:1.05rem}
-  .placeholder code{font-size:.72rem; color:var(--amber)}
+  .placeholder code{font-size:.72rem; color:var(--amber-ink)}
 
   .vig{position:fixed; inset:0; pointer-events:none; z-index:5; opacity:0; transition:opacity .3s;
     background:radial-gradient(circle at 50% 45%, transparent 15%, rgba(0,0,0,.97) 56%)}
